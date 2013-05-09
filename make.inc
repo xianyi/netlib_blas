@@ -28,7 +28,3 @@ LOADOPTS =
 ARCH     = ar
 ARCHFLAGS= cr
 RANLIB   = ranlib
-#
-#  The location and name of the Reference BLAS library.
-#
-BLASLIB      = blas$(PLAT).a

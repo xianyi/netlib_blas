@@ -55,8 +55,18 @@ include make.inc
 #
 #######################################################################
 
-all: $(BLASLIB)
- 
+#
+#  The location and name of the Reference BLAS library.
+#
+BLASLIB_NAME      = libblas$(PLAT)
+BLASLIB=$(BLASLIB_NAME).a
+BLASLIB_SHARED=$(BLASLIB_NAME).so
+
+
+FFLAGS=$(OPTS) -fPIC
+
+
+all: $(BLASLIB) $(BLASLIB_SHARED)
 #---------------------------------------------------------
 #  Comment out the next 6 definitions if you already have
 #  the Level 1 BLAS.
@@ -164,8 +174,13 @@ complex16: $(ZBLAS1) $(ZB1AUX) $(ALLBLAS) $(ZBLAS2) $(ZBLAS3)
 FRC:
 	@FRC=$(FRC)
 
+$(BLASLIB_SHARED):$(BLASLIB)
+	$(FORTRAN) $(FFLAGS) -c -o tmp.o tmp.c
+	$(FORTRAN) -shared -o $(BLASLIB_SHARED) tmp.o -Wl,--whole-archive ./$(BLASLIB) -Wl,--no-whole-archive
+
 clean:
 	rm -f *.o
+	rm -f $(BLASLIB) $(BLASLIB_SHARED)
 
 .f.o: 
-	$(FORTRAN) $(OPTS) -c $< -o $@
+	$(FORTRAN) $(FFLAGS) -c $< -o $@

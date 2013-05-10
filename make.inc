@@ -15,12 +15,20 @@ PLAT = _LINUX
 #  selected.  Define LOADER and LOADOPTS to refer to the loader and 
 #  desired load options for your machine.
 #
+
+CC = gcc
 FORTRAN  = gfortran
+FC = $(FORTRAN)
 OPTS     = -O3
 DRVOPTS  = $(OPTS)
 NOOPT    =
 LOADER   = gfortran
 LOADOPTS =
+
+# For CBLAS
+CFLAGS = $(OPTS) -DADD_ -fPIC
+FFLAGS = $(OPTS) -fPIC
+
 #
 #  The archiver and the flag(s) to use when building archive (library)
 #  If you system has no ranlib, set RANLIB = echo.
@@ -28,3 +36,6 @@ LOADOPTS =
 ARCH     = ar
 ARCHFLAGS= cr
 RANLIB   = ranlib
+
+# Don't compile CBLAS.
+# NO_CBLAS=1

@@ -55,6 +55,8 @@ include make.inc
 #
 #######################################################################
 
+.PHONY : all cblas
+
 #
 #  The location and name of the Reference BLAS library.
 #
@@ -147,7 +149,7 @@ ALLOBJ=$(SBLAS1) $(SBLAS2) $(SBLAS3) $(DBLAS1) $(DBLAS2) $(DBLAS3)	\
 	$(CBLAS1) $(CBLAS2) $(CBLAS3) $(ZBLAS1) 	\
 	$(ZBLAS2) $(ZBLAS3) $(ALLBLAS)
 
-$(BLASLIB): $(ALLOBJ)
+$(BLASLIB): $(ALLOBJ) cblas
 	$(ARCH) $(ARCHFLAGS) $@ $(ALLOBJ)
 	$(RANLIB) $@
 
@@ -178,8 +180,16 @@ $(BLASLIB_SHARED):$(BLASLIB)
 	$(FORTRAN) $(FFLAGS) -c -o tmp.o tmp.c
 	$(FORTRAN) -shared -o $(BLASLIB_SHARED) tmp.o -Wl,--whole-archive ./$(BLASLIB) -Wl,--no-whole-archive
 
+cblas:
+ifndef NO_CBLAS
+	$(MAKE) -C ./CBLAS alllib
+endif
+
 clean:
 	rm -f *.o
+ifndef NO_CBLAS
+	$(MAKE) -C ./CBLAS clean
+endif
 	rm -f $(BLASLIB) $(BLASLIB_SHARED)
 
 .f.o: 
